@@ -3,7 +3,9 @@ Author: Youbin Mo
 Start Date: 03/07/2018
 Last Updata: 03/07/2018
 
-Version 0.2
+Version 0.2.1
+
+Find the amplitude of 20,50,100,150,200,250,300,350,400,450,500,1000,2000,5000,10000 Hz.
 
 Add new function to save and read database.
 

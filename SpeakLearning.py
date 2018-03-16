@@ -41,18 +41,25 @@ time = np.arange(0, NSample*1.0/SampleRate, 1.0/SampleRate)
 
 Amp_1 = nf.fft(Left)
 k_1 = nf.fftfreq(NSample, d = 1.0/SampleRate)
-ReserveAmp_1 = [Amp_1[i] for i in range(len(Amp_1)) if (k_1[i] >20 and k_1[i]<10000)]
-ReserveK_1 = [k_1[i] for i in range(len(k_1)) if (k_1[i] >20 and k_1[i]<10000)]
+ReserveAmp_1 = [Amp_1[i] for i in range(len(Amp_1)) if (k_1[i] >=20 and k_1[i]<=10001)]
+ReserveK_1 = [k_1[i] for i in range(len(k_1)) if (k_1[i] >=20 and k_1[i]<=10001)]
 Prounce_1 = nf.ifft(ReserveAmp_1)
 
 Amp_2 = nf.fft(Right)
 k_2 = nf.fftfreq(NSample, d = 1.0/SampleRate)
-ReserveAmp_2 = [Amp_2[i] for i in range(len(Amp_2)) if (k_2[i] >20 and k_2[i]<10000)]
-ReserveK_2 = [k_1[i] for i in range(len(k_2)) if (k_2[i] >20 and k_2[i]<10000)]
+ReserveAmp_2 = [Amp_2[i] for i in range(len(Amp_2)) if (k_2[i] >=20 and k_2[i]<=10001)]
+ReserveK_2 = [k_1[i] for i in range(len(k_2)) if (k_2[i] >=20 and k_2[i]<=10001)]
 Prounce_2 = nf.ifft(ReserveAmp_2)
 
+dF = NSample*1.0/SampleRate
+Freq_List = [20,50,100,150,200,250,300,350,400,450,500,1000,2000,5000,10000]
+Index = [int((a-20)*dF) for a in Freq_List]
+data_fixFreq_L = []
+data_peak_L = []
 
-print info
+
+print Index
+print [ReserveK_1[i] for i in Index]
 #print "Left",Left
 #print "Right", Right
 
