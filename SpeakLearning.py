@@ -4,6 +4,8 @@ import wave
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.fft as nf
+import ReadLoadDB
+
 
 #file = 'S1E5.mp3'
 
