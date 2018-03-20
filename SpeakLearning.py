@@ -38,28 +38,36 @@ Channels = int(info[2][1])
 SampleRate = int(info[3][1])
 #print NSample*1.0/SampleRate
 time = np.arange(0, NSample*1.0/SampleRate, 1.0/SampleRate)
+norm_para = len(time)/2
 
-Amp_1 = nf.fft(Left)
+Spectrum_1 = nf.fft(Left)
 k_1 = nf.fftfreq(NSample, d = 1.0/SampleRate)
-ReserveAmp_1 = [Amp_1[i] for i in range(len(Amp_1)) if (k_1[i] >=20 and k_1[i]<=10001)]
-ReserveK_1 = [k_1[i] for i in range(len(k_1)) if (k_1[i] >=20 and k_1[i]<=10001)]
-Prounce_1 = nf.ifft(ReserveAmp_1)
 
-Amp_2 = nf.fft(Right)
-k_2 = nf.fftfreq(NSample, d = 1.0/SampleRate)
-ReserveAmp_2 = [Amp_2[i] for i in range(len(Amp_2)) if (k_2[i] >=20 and k_2[i]<=10001)]
-ReserveK_2 = [k_1[i] for i in range(len(k_2)) if (k_2[i] >=20 and k_2[i]<=10001)]
-Prounce_2 = nf.ifft(ReserveAmp_2)
+Index_1 = [i for i in range(len(k_1)) if (k_1[i] >=20 and k_1[i]<=10001)]
+ReserveSpec_1 = np.array([ Spectrum_1[i] for i in Index_1])
+ReserveAmp_1 = [abs(Spectrum_1[i])/norm_para for i in Index_1]
+ReserveK_1 = [k_1[i] for i in Index_1]
+ReservePhase_1 = np.array([np.angle(spec) for spec in ReserveSpec_1])
+#Prounce_1 = nf.ifft(ReserveAmp_1)
 
 dF = NSample*1.0/SampleRate
 Freq_List = [20,50,100,150,200,250,300,350,400,450,500,1000,2000,5000,10000]
 Index = [int((a-20)*dF) for a in Freq_List]
-data_fixFreq_L = []
-data_peak_L = []
+
+sort_index = np.argsort(ReserveAmp_1)
+pick_index = sort_index[:-1000:-1]
+
+#pick_index.sort()
+print len(pick_index)
+#print [ReservePhase_1[i] for i in pick_index]
+
+Prounce_1 = np.zeros(len(time))
+for idx in pick_index:
+	Prounce_1 = np.add(Prounce_1, ReserveAmp_1[idx]*np.sin(2*np.pi*ReserveK_1[idx]*time+ReservePhase_1[idx]))
+	
+print max(Prounce_1)
 
 
-print Index
-print [ReserveK_1[i] for i in Index]
 #print "Left",Left
 #print "Right", Right
 
@@ -75,7 +83,7 @@ plt.show()
 
 plt.figure()
 plt.subplot(211)
-plt.plot(k_1, abs(Amp_1))
+plt.plot(k_1, abs(Spectrum_1))
 plt.subplot(212)
 plt.plot(ReserveK_1, ReserveAmp_1)
 plt.show()
