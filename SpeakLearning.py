@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.fft as nf
 import ReadLoadDB
-
+import scipy.signal as signal
 
 #file = 'S1E5.mp3'
 
 folder_path = "E:\MachineLearning\AudioProcess\LearningSample"
 Noise_folder = os.path.join(folder_path,"Baba","txt")
-
 file_name = os.path.join(Noise_folder, "baba01.txt")
+
 print(file_name)
 #sound = AudioSegment.from_mp3(file)
 #sound.export(target_file, format="wav")
@@ -64,7 +64,6 @@ print len(pick_index)
 Prounce_1 = np.zeros(len(time))
 for idx in pick_index:
 	Prounce_1 = np.add(Prounce_1, ReserveAmp_1[idx]*np.sin(2*np.pi*ReserveK_1[idx]*time+ReservePhase_1[idx]))
-	
 print max(Prounce_1)
 
 
@@ -87,3 +86,17 @@ plt.plot(k_1, abs(Spectrum_1))
 plt.subplot(212)
 plt.plot(ReserveK_1, ReserveAmp_1)
 plt.show()
+
+print "writing"
+
+# open wav file
+f = wave.open("replay.wav", "wb")
+
+# profile
+f.setnchannels(1)
+f.setsampwidth(2)
+f.setframerate(SampleRate)
+# write sound to file 
+sound = Prounce_1.astype(np.short)
+f.writeframes(sound.tostring())
+f.close()
